@@ -23,6 +23,7 @@ namespace Pinetime {
         Controllers::MotorController& motorController;
         System::SystemTask& systemTask;
         int16_t bpm = 120;
+        uint8_t bpmDataPoints = 0;
         uint8_t bpb = 4;
         uint8_t counter = 1;
 

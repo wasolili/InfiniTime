@@ -96,6 +96,7 @@ void Metronome::OnEvent(lv_obj_t* obj, lv_event_t event) {
     case LV_EVENT_VALUE_CHANGED: {
       if (obj == bpmArc) {
         bpm = lv_arc_get_value(bpmArc);
+        bpmDataPoints = 0;
         lv_label_set_text_fmt(bpmValue, "%03d", bpm);
       } else if (obj == bpbDropdown) {
         bpb = lv_dropdown_get_selected(obj) + 1;
@@ -108,7 +109,10 @@ void Metronome::OnEvent(lv_obj_t* obj, lv_event_t event) {
       if (obj == bpmTap) {
         TickType_t delta = xTaskGetTickCount() - tappedTime;
         if (tappedTime != 0 && delta < configTICK_RATE_HZ * 3) {
-          bpm = configTICK_RATE_HZ * 60 / delta;
+          bpm = ((configTICK_RATE_HZ * 60 / delta) + (bpm * bpmDataPoints))/(bpmDataPoints+1);
+          if(bpmDataPoints < 3) {
+            bpmDataPoints++;
+          }
           lv_arc_set_value(bpmArc, bpm);
           lv_label_set_text_fmt(bpmValue, "%03d", bpm);
         }
